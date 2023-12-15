@@ -169,10 +169,10 @@ class Client:
         else:
             self.__check_inited()
     
-    def __trigger(self, event: str, **kwargs) -> None:
+    def __trigger(self, event: str, *args) -> None:
         for cb in self.__callbacks[event]:
             try:
-                th = threading.Thread(target=cb, kwargs=kwargs)
+                th = threading.Thread(target=cb, args=args)
                 self.__callback_threads.append(th)
                 th.start()
             except:
@@ -198,7 +198,7 @@ class Client:
         self.__logger.debug(str(transition))
         with self.__state_lock:
             self.__state = state
-        self.__trigger('statechange', transition=transition)
+        self.__trigger('statechange', transition)
     
     def __recv_consumer_thread_func(self):
         msg = None
@@ -217,7 +217,7 @@ class Client:
                     self.logger.info("Server is shutting down. Closing connection")
                     self.__server_shut_down()
                 # message received. callbacks, callbacks, callbacks!
-                else:  self.__trigger('message', msg=msg)
+                else:  self.__trigger('message', msg)
             # clear out old threads
             for i,th in enumerate(self.__callback_threads):
                 if not th.is_alive(): self.__callback_threads.pop(i)
@@ -295,7 +295,7 @@ class Client:
         self.__recv_consumer_should_run = True
         self.__recv_consumer_thread = threading.Thread(target=self.__recv_consumer_thread_func)
         self.__recv_consumer_thread.start()
-        self.__trigger('connect', client_id=self.__client_id)
+        self.__trigger('connect', self.__client_id)
         return True
     
     def __reconnect_wrapper(self):
@@ -317,7 +317,7 @@ class Client:
             sleeptime = min(sleeptime*2, 15)
             rec_again = not self.__reconnect()
         self.__set_state(ClientState.STATE_OK | ClientState.STATE_CONNECTED)
-        self.__trigger('reconnect', client_id=self.__client_id)
+        self.__trigger('reconnect', self.__client_id)
         self.__logger.info("Successfully reconnected")
         return True
 
