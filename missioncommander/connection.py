@@ -10,49 +10,6 @@ from typing import Union, Dict, Optional, Callable, List
 HEADER_LEN_BYTES = 64
 CHUNK_SIZE_BYTES = 2048
 
-class ConnectionStatus(enum.Flag):
-    NONE = 0
-    UNDEF = NONE
-    # action statuses
-    ACTION_TRYING = 1
-    ACTION_FAILED = 2
-    ACTION_SUCCESS = 4
-    # connect
-    ACTION_CONNECT = 8
-    CONNECTING = ACTION_CONNECT | ACTION_TRYING
-    CONNECTED = ACTION_CONNECT | ACTION_SUCCESS
-    CONNECT_FAILED = ACTION_CONNECT | ACTION_FAILED
-    # reconnect
-    ACTION_RECONNECT = 16
-    RECONNECTING = ACTION_RECONNECT | ACTION_TRYING
-    RECONNECTED = ACTION_RECONNECT | ACTION_SUCCESS
-    RECONNECT_FAILED = ACTION_RECONNECT | ACTION_FAILED
-    # disconnect
-    ACTION_DISCONNECT = 32
-    DISCONNECTING = ACTION_DISCONNECT | ACTION_TRYING
-    DISCONNECT_FAILED = ACTION_DISCONNECT | ACTION_FAILED
-    DISCONNECTED = ACTION_DISCONNECT | ACTION_SUCCESS
-    # # start
-    # ACTION_START = 64
-    # STARTING = ACTION_START | ACTION_TRYING
-    # START_FAILED = ACTION_START | ACTION_FAILED
-    # STARTED = ACTION_START | ACTION_SUCCESS
-    # # stop
-    # ACTION_STOP = 128
-    # STOPPING = ACTION_STOP | ACTION_TRYING
-    # STOP_FAILED = ACTION_STOP | ACTION_FAILED
-    # STOPPED = ACTION_STOP | ACTION_SUCCESS
-    
-    def is_connect(self)    -> bool: return bool(self & self.__class__.ACTION_CONNECT)
-    def is_reconnect(self)  -> bool: return bool(self & self.__class__.ACTION_RECONNECT)
-    def is_disconnect(self) -> bool: return bool(self & self.__class__.ACTION_DISCONNECT)
-    # def is_start(self)      -> bool: return bool(self & self.__class__.ACTION_START)
-    # def is_stop(self)       -> bool: return bool(self & self.__class__.ACTION_STOP)
-
-    def is_trying(self)  -> bool: return bool(self & self.__class__.ACTION_TRYING)
-    def is_success(self) -> bool: return bool(self & self.__class__.ACTION_SUCCESS)
-    def is_failed(self)  -> bool: return bool(self & self.__class__.ACTION_FAILED)
-
 
 class Message:
     def __init__(self, subject: str, payload: Dict[str, Union[str,int,float,bool]]):

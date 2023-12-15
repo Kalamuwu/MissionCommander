@@ -3,7 +3,7 @@ from .gui import ControllerGUI
 from .cli import ControllerCLI
 
 # api
-from .connection import ConnectionStatus, Message
+from .connection import Message
 from .client import Client, ClientState, ClientStateTransition
 from .server import Server
 
